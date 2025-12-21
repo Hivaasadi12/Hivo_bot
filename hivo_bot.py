@@ -32,14 +32,29 @@ def get_flag_from_ip(ip):
         response = requests.get(f"http://ip-api.com/json/{ip}?fields=countryCode", timeout=6)
         if response.status_code == 200:
             code = response.json().get("countryCode")
-            flags = {"IR": "🇮🇷", "DE": "🇩🇪", "US": "🇺🇸", "NL": "🇳🇱", "FR": "🇫🇷", "GB": "🇬🇧", "CA": "🇨🇦", "JP": "🇯🇵", "SG": "🇸🇬", "RU": "🇷🇺"}
+            flags = {
+                "IR": "🇮🇷",
+                "DE": "🇩🇪",
+                "US": "🇺🇸",
+                "NL": "🇳🇱",
+                "FR": "🇫🇷",
+                "GB": "🇬🇧",
+                "CA": "🇨🇦",
+                "JP": "🇯🇵",
+                "SG": "🇸🇬",
+                "RU": "🇷🇺"
+            }
             return flags.get(code, "🌍")
     except:
         pass
     return "🌍"
 
+
 IP_PATTERN = re.compile(r'@([a-zA-Z0-9.-]+)')
-CONFIG_PATTERN = re.compile(r'(vless|vmess|trojan|ss|shadowsocks|hysteria|hysteria2|hy2|tuic|reality)://[^\s\"\'<>\n]+', re.IGNORECASE)
+CONFIG_PATTERN = re.compile(
+    r'(vless|vmess|trojan|ss|shadowsocks|hysteria|hysteria2|hy2|tuic|reality)://[^\s\"\'<>\n]+',
+    re.IGNORECASE
+)
 
 # کپشن‌های کامل حرفه‌ای
 captions = [
@@ -66,7 +81,8 @@ captions = [
     "❤️ **با عشق از Hivo** ❤️\n\nکانفیگ جدید تقدیم شما\nکلیک = کپی\n\nما عاشق رضایت شماییم\n@Hivo_Configs7"
 ]
 
-async def main():
+
+async def run_bot():
     while True:
         user_client = TelegramClient('hivo_session', API_ID, API_HASH)
         bot_client = TelegramClient('hivo_bot', API_ID, API_HASH)
@@ -87,7 +103,15 @@ async def main():
                 console.print("[bold yellow]██╔══██║██║╚██╗ ██╔╝██║   ██║[/]")
                 console.print("[bold red]██║  ██║██║ ╚████╔╝ ╚██████╔╝[/]")
                 console.print("[bold blue]╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═════╝ [/]")
-            console.print(Panel.fit("[bold white on blue] ربات Hivo با گرافیک لوکس فعال شد! [/]\n[bold green]در حال رصد @ConfigsHUB...[/]", title="[rainbow]HIVO PREMIUM BOT[/]", border_style="yellow", box=box.HEAVY))
+            console.print(
+                Panel.fit(
+                    "[bold white on blue] ربات Hivo با گرافیک لوکس فعال شد! [/]\n"
+                    "[bold green]در حال رصد @ConfigsHUB...[/]",
+                    title="[rainbow]HIVO PREMIUM BOT[/]",
+                    border_style="yellow",
+                    box=box.HEAVY,
+                )
+            )
 
             @user_client.on(events.NewMessage(chats=SOURCE_CHANNEL, incoming=True))
             async def handler(event):
@@ -137,14 +161,14 @@ async def main():
                         else:
                             new_link = original_link + "#" + encoded_name
 
-                        # گرافیک لوکس، واضح و مینیمال (الماس کم)
-                        card = f"╔══════════════════════════════════════════╗\n"
+                        # گرافیک لوکس، واضح و مینیمال
+                        card = "╔══════════════════════════════════════════╗\n"
                         card += f"║  {flag}      **{flag} Hivo Configs**      ║\n"
-                        card += f"║                                          ║\n"
-                        card += f"║   ⚡ سرعت بالا • پینگ عالی            ║\n"
-                        card += f"║   🔒 امن • پایدار • تست‌شده          ║\n"
-                        card += f"║                                          ║\n"
-                        card += f"╚══════════════════════════════════════════╝\n"
+                        card += "║                                          ║\n"
+                        card += "║   ⚡ سرعت بالا • پینگ عالی            ║\n"
+                        card += "║   🔒 امن • پایدار • تست‌شده          ║\n"
+                        card += "║                                          ║\n"
+                        card += "╚══════════════════════════════════════════╝\n"
                         card += f"`{new_link}`\n\n"
 
                         new_parts.append(card)
@@ -157,15 +181,26 @@ async def main():
                     header += "💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎\n\n"
 
                     configs_text = "".join(new_parts)
-                    footer = "💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎\n\n" + random.choice(captions)
+                    footer = (
+                        "💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎 💎\n\n"
+                        + random.choice(captions)
+                    )
 
                     final_text = header + configs_text + footer
 
                     await asyncio.sleep(3)
-                    await bot_client.send_message(DEST_CHANNEL, final_text, parse_mode='md')
+                    await bot_client.send_message(
+                        DEST_CHANNEL,
+                        final_text,
+                        parse_mode="md",
+                    )
 
                     # لاگ لوکس در ترموکس
-                    table = Table(title=f"[bold yellow]ارسال موفق {len(new_parts)} کانفیگ[/]", box=box.DOUBLE, border_style="yellow")
+                    table = Table(
+                        title=f"[bold yellow]ارسال موفق {len(new_parts)} کانفیگ[/]",
+                        box=box.DOUBLE,
+                        border_style="yellow",
+                    )
                     table.add_column("زمان", style="cyan", justify="center")
                     table.add_column("تعداد", style="magenta", justify="center")
                     table.add_column("منبع", style="bright_white", justify="center")
@@ -173,12 +208,26 @@ async def main():
                     console.print(table)
 
                 except Exception as e:
-                    console.print(Panel(f"[bold red]ارور: {str(e)}[/]", title="خطا", box=box.HEAVY, border_style="red"))
+                    console.print(
+                        Panel(
+                            f"[bold red]ارور: {str(e)}[/]",
+                            title="خطا",
+                            box=box.HEAVY,
+                            border_style="red",
+                        )
+                    )
 
             await user_client.run_until_disconnected()
 
         except Exception as e:
-            console.print(Panel(f"[bold yellow]قطع ارتباط: {str(e)} | دوباره تلاش...[/]", title="اتصال", box=box.HEAVY, border_style="yellow"))
+            console.print(
+                Panel(
+                    f"[bold yellow]قطع ارتباط: {str(e)} | دوباره تلاش...[/]",
+                    title="اتصال",
+                    box=box.HEAVY,
+                    border_style="yellow",
+                )
+            )
             await asyncio.sleep(30)
         finally:
             try:
@@ -187,4 +236,13 @@ async def main():
             except:
                 pass
 
-asyncio.run(main())
+
+def main():
+    """
+    نقطه‌ی ورود استاندارد برای Railway یا اجرای لوکال.
+    """
+    asyncio.run(run_bot())
+
+
+if __name__ == "__main__":
+    main()
